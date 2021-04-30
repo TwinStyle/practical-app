@@ -83,7 +83,7 @@
                         <td><?php echo $record->filename ?></td>
                         <td><?php echo $record->filesize ?></td>
                         <td><?php echo date("d-m-Y", strtotime($record->dateofupload)) ?></td>
-                        <td><?php echo $record->mobile ?></td> 
+                        <td><?php echo $record->content ?></td> 
                         <td class="text-center">
                              <a class="btn btn-sm btn-info" href="<?php echo base_url().'editOld/'.$record->userId; ?>" title="Edit"><i class="fa fa-pencil"></i></a>
                             <a class="btn btn-sm btn-danger deleteUser" href="#" data-userid="<?php echo $record->userId; ?>" title="Delete"><i class="fa fa-trash"></i></a>

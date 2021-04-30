@@ -36,14 +36,15 @@ class User_model extends CI_Model
     {
         $this->db->select('BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');
         $this->db->from('uploads as BaseTbl');
-        //$this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.roleId','left');
+        $this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.userId','left');
         if(!empty($searchText)) {
             $likeCriteria = "(BaseTbl.filename  LIKE '%".$searchText."%'
-                            OR  BaseTbl.content  LIKE '%".$searchText."%'";
+                            OR  BaseTbl.content  LIKE '%".$searchText."%')";
             $this->db->where($likeCriteria);
         }
-       // $this->db->where('BaseTbl.isDeleted', 0);
-        //$this->db->where('BaseTbl.roleId !=', 1);
+
+        $this->db->where('BaseTbl.isDeleted', 0);
+        $this->db->where('BaseTbl.userId !=', 1);
         $query = $this->db->get();
         
         return $query->num_rows();
@@ -77,20 +78,19 @@ class User_model extends CI_Model
         return $result;
     }
 
-    function uploadListing($searchText = '', $page, $segment)
+    function uploadlisting($searchText = '', $page, $segment)
     {
-        $this->db->select('BaseTbl.userId, BaseTbl.email, BaseTbl.name, BaseTbl.mobile, BaseTbl.createdDtm, Role.role');
-        $this->db->from('tbl_users as BaseTbl');
-        $this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.roleId','left');
+        $this->db->select('BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');//,Role.role');
+        $this->db->from('uploads as BaseTbl');
+        //$this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.userId','left');
         if(!empty($searchText)) {
-            $likeCriteria = "(BaseTbl.email  LIKE '%".$searchText."%'
-                            OR  BaseTbl.name  LIKE '%".$searchText."%'
-                            OR  BaseTbl.mobile  LIKE '%".$searchText."%')";
+            $likeCriteria = "(BaseTbl.filename  LIKE '%".$searchText."%'
+                            OR  BaseTbl.content  LIKE '%".$searchText."%'";
             $this->db->where($likeCriteria);
         }
-        $this->db->where('BaseTbl.isDeleted', 0);
-        $this->db->where('BaseTbl.roleId !=', 1);
-        $this->db->order_by('BaseTbl.userId', 'DESC');
+      // $this->db->where('BaseTbl.isDeleted', 0);
+       //$this->db->where('BaseTbl.userId !=', 1);
+        //$query = $this->db->get();
         $this->db->limit($page, $segment);
         $query = $this->db->get();
         

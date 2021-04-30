@@ -75,9 +75,9 @@ class User extends BaseController
             
             $count = $this->user_model->uploadListingCount($searchText);
 
-			$returns = $this->paginationCompress ( "uploadListing/", $count, 10 );
+			$returns = $this->paginationCompress ( "uploadlisting/", $count, 10 );
             
-            $data['uploadRecords'] = $this->user_model->uploadListing($searchText, $returns["page"], $returns["segment"]);
+            $data['uploadRecords'] = $this->user_model->uploadlisting($searchText, $returns["page"], $returns["segment"]);
             
             $this->global['pageTitle'] = 'CodeInsect : User Listing';
             
