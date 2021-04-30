@@ -77,6 +77,7 @@ $route['deletefile'] = "user/deletefile";
 $route['editfile'] = "user/editfile";
 
 $route['searchWord'] = "user/searchWord";
+$route['test_api'] = "user/test_api/action";
 
 
 $route['profile'] = "user/profile";
