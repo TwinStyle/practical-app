@@ -569,10 +569,8 @@ class User extends BaseController
                 
               //  $files = glob(getcwd()."/assets/uploads/*.txt");
 
-              $quote = "Try not to become a man of success, but rather try to become a man of value.";
- 
-              echo substr_count($quote, 'man'); // Outputs: 2
-                //redirect('uploadlisting');
+              // Outputs: 2
+                 redirect('uploadlisting');
                // redirect('uploadlisting');
         }
 

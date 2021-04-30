@@ -102,23 +102,36 @@ class User_model extends CI_Model
    
     function searchWord($searchText = '', $page, $segment)
     {
+        $query  = $this->db->query("SELECT id,content
+                                    FROM uploads");   
+                             
+        $count_files=$query->num_rows();   
 
+        foreach ($query->result() as $row)
+        {
+           
+            $TimesFound = substr_count($row->content, $searchText); 
 
-        //here
-        $this->db->select('BaseTbl.id,BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');//,Role.role');
+            $query = $this->db->query("UPDATE uploads 
+                            set priority = '$TimesFound' 
+                            WHERE id = '$row->id'");
+            
+            $TimesFound = 0;
+        }
+      
+        $this->db->select('BaseTbl.id,BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content, BaseTbl.priority');//,Role.role');
         $this->db->from('uploads as BaseTbl'); 
 
         
-        if(!empty($searchText)) {
-            $likeCriteria = "(BaseTbl.content  LIKE '%".$searchText."%')";
-            $this->db->where($likeCriteria);
-        }
-        $this->db->where('BaseTbl.isDeleted', 0); 
-        $this->db->order_by('BaseTbl.content', 'DESC');
+        if(!empty($searchText)) { 
+            $this->db->where('BaseTbl.isDeleted', 0); 
+            $this->db->order_by('BaseTbl.priority', 'DESC');
 
-        $query = $this->db->get();
-        
-        $result = $query->result();        
+            $query = $this->db->get();
+            
+            $result = $query->result(); 
+        }
+             
         return $result;
     }
 
