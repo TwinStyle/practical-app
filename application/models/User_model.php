@@ -34,7 +34,7 @@ class User_model extends CI_Model
 
     function uploadListingCount($searchText = '')
     {
-        $this->db->select('BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');
+        $this->db->select('BaseTbl.id,BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');
         $this->db->from('uploads as BaseTbl');
         $this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.userId','left');
         if(!empty($searchText)) {
@@ -49,6 +49,27 @@ class User_model extends CI_Model
         
         return $query->num_rows();
     }
+    
+    
+    function searchWordCount($searchText = '')
+    {
+
+        $this->db->select('BaseTbl.id,BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');
+        $this->db->from('uploads as BaseTbl');
+        $this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.userId','left');
+        if(!empty($searchText)) {
+            $likeCriteria = "(BaseTbl.filename  LIKE '%".$searchText."%'
+                            OR  BaseTbl.content  LIKE '%".$searchText."%')";
+            $this->db->where($likeCriteria);
+        }
+
+        $this->db->where('BaseTbl.isDeleted', 0);
+        $this->db->where('BaseTbl.userId !=', 1);
+        $query = $this->db->get();
+        
+        return $query->num_rows();
+    }
+    
     
     /**
      * This function is used to get the user listing count
@@ -78,9 +99,32 @@ class User_model extends CI_Model
         return $result;
     }
 
+   
+    function searchWord($searchText = '', $page, $segment)
+    {
+
+
+        //here
+        $this->db->select('BaseTbl.id,BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');//,Role.role');
+        $this->db->from('uploads as BaseTbl'); 
+
+        
+        if(!empty($searchText)) {
+            $likeCriteria = "(BaseTbl.content  LIKE '%".$searchText."%')";
+            $this->db->where($likeCriteria);
+        }
+        $this->db->where('BaseTbl.isDeleted', 0); 
+        $this->db->order_by('BaseTbl.content', 'DESC');
+
+        $query = $this->db->get();
+        
+        $result = $query->result();        
+        return $result;
+    }
+
     function uploadlisting($searchText = '', $page, $segment)
     {
-        $this->db->select('BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');//,Role.role');
+        $this->db->select('BaseTbl.id,BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');//,Role.role');
         $this->db->from('uploads as BaseTbl');
         //$this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.userId','left');
         if(!empty($searchText)) {
@@ -88,7 +132,7 @@ class User_model extends CI_Model
                             OR  BaseTbl.content  LIKE '%".$searchText."%'";
             $this->db->where($likeCriteria);
         }
-      // $this->db->where('BaseTbl.isDeleted', 0);
+        $this->db->where('BaseTbl.isDeleted', 0);
        //$this->db->where('BaseTbl.userId !=', 1);
         //$query = $this->db->get();
         $this->db->limit($page, $segment);
@@ -191,6 +235,14 @@ class User_model extends CI_Model
     {
         $this->db->where('userId', $userId);
         $this->db->update('tbl_users', $userInfo);
+        
+        return $this->db->affected_rows();
+    }
+
+    function deletefile($userId, $userInfo)
+    {
+        $this->db->where('id', $userId);
+        $this->db->update('uploads', $userInfo);
         
         return $this->db->affected_rows();
     }
@@ -340,6 +392,7 @@ class User_model extends CI_Model
         return $query->row();
     }
 
+    //dave file to db
     function saveupload($uploadinfo)
     {
         

@@ -60,6 +60,30 @@ class User extends BaseController
     }
 
      
+    function searchWord()
+    {
+        if($this->isAdmin() == TRUE)
+        {
+            $this->loadThis();
+        } 
+        else
+        {        
+            $searchText = $this->security->xss_clean($this->input->post('searchText'));
+            $data['searchText'] = $searchText;
+            
+            $this->load->library('pagination');
+            
+            $count = $this->user_model->searchWordCount($searchText);
+
+			$returns = $this->paginationCompress ( "searchWord/", $count, 10 );
+            
+            $data['uploadRecords'] = $this->user_model->searchWord($searchText, $returns["page"], $returns["segment"]);
+            
+            $this->global['pageTitle'] = 'CodeInsect : User Listing';
+            
+            $this->loadViews("upload", $this->global, $data, NULL);
+        }
+    }
     function uploadlisting()
     {
         if($this->isAdmin() == TRUE)
@@ -288,6 +312,26 @@ class User extends BaseController
             else { echo(json_encode(array('status'=>FALSE))); }
         }
     }
+
+    function deletefile()
+    {
+        if($this->isAdmin() == TRUE)
+        {
+            echo(json_encode(array('status'=>'access')));
+        }
+        else
+        {
+            $userId = $this->input->post('userId');
+            $userInfo = array('isDeleted'=>1);//'updatedBy'=>$this->vendorId, 'updatedDtm'=>date('Y-m-d H:i:s'));
+            
+            $result = $this->user_model->deletefile($userId, $userInfo);
+            
+            if ($result > 0) { echo(json_encode(array('status'=>TRUE))); }
+            else { echo(json_encode(array('status'=>FALSE))); }
+        }
+    }
+
+    
     
     /**
      * Page not found : error 404
@@ -347,6 +391,15 @@ class User extends BaseController
         
         $this->global['pageTitle'] = $active == "details" ? 'CodeInsect : My Profile' : 'CodeInsect : Change Password';
         $this->loadViews("profile", $this->global, $data, NULL);
+    }
+
+    function editfile($active = "details")
+    {
+        $data["userInfo"] = $this->user_model->getUserInfoWithRole($this->vendorId);
+        $data["active"] = $active;
+        
+        $this->global['pageTitle'] = $active == "details" ? 'CodeInsect : My Profile' : 'CodeInsect : Change Password';
+        $this->loadViews("editfile", $this->global, $data, NULL);
     }
 
     /**
@@ -497,7 +550,8 @@ class User extends BaseController
                                  'filename'=>$_FILES["customeFile"]["name"],
                                  'filesize'=>$_FILES["customeFile"]["size"],
                                  'dateofupload'=>date('Y-m-d H:i:s'),
-                                 'content'=>$content);
+                                 'content'=>$content,
+                                'isDeleted'=>0);
 
 
                 $userId = $this->user_model->userid( $this->vendorId);
@@ -506,14 +560,19 @@ class User extends BaseController
 
                 if($result > 0)
                 {
-                    $this->session->set_flashdata('success', 'File successfully Saved');
+                    $this->session->set_flashdata('success', "File successfully uploaded! ! ! ");
                 }
                 else
                 {
                     $this->session->set_flashdata('error', 'File failed to save');
                 }
                 
-                redirect('uploadlisting');
+              //  $files = glob(getcwd()."/assets/uploads/*.txt");
+
+              $quote = "Try not to become a man of success, but rather try to become a man of value.";
+ 
+              echo substr_count($quote, 'man'); // Outputs: 2
+                //redirect('uploadlisting');
                // redirect('uploadlisting');
         }
 

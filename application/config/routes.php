@@ -73,6 +73,12 @@ $route['editOld'] = "user/editOld";
 $route['editOld/(:num)'] = "user/editOld/$1";
 $route['editUser'] = "user/editUser";
 $route['deleteUser'] = "user/deleteUser";
+$route['deletefile'] = "user/deletefile";
+$route['editfile'] = "user/editfile";
+
+$route['searchWord'] = "user/searchWord";
+
+
 $route['profile'] = "user/profile";
 $route['profile/(:any)'] = "user/profile/$1";
 $route['profileUpdate'] = "user/profileUpdate";
