@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `cias`
+-- Database: `practical`
 --
 
 -- --------------------------------------------------------
@@ -34,42 +34,7 @@ CREATE TABLE `ci_sessions` (
   `user_data` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_last_login`
---
-
-CREATE TABLE `tbl_last_login` (
-  `id` bigint(20) NOT NULL,
-  `userId` bigint(20) NOT NULL,
-  `sessionData` varchar(2048) NOT NULL,
-  `machineIp` varchar(1024) NOT NULL,
-  `userAgent` varchar(128) NOT NULL,
-  `agentString` varchar(1024) NOT NULL,
-  `platform` varchar(128) NOT NULL,
-  `createdDtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_reset_password`
---
-
-CREATE TABLE `tbl_reset_password` (
-  `id` bigint(20) NOT NULL,
-  `email` varchar(128) NOT NULL,
-  `activation_id` varchar(32) NOT NULL,
-  `agent` varchar(512) NOT NULL,
-  `client_ip` varchar(32) NOT NULL,
-  `isDeleted` tinyint(4) NOT NULL DEFAULT '0',
-  `createdBy` bigint(20) NOT NULL DEFAULT '1',
-  `createdDtm` datetime NOT NULL,
-  `updatedBy` bigint(20) DEFAULT NULL,
-  `updatedDtm` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+  
 -- --------------------------------------------------------
 
 --
@@ -133,15 +98,11 @@ ALTER TABLE `ci_sessions`
 --
 -- Indexes for table `tbl_last_login`
 --
-ALTER TABLE `tbl_last_login`
-  ADD PRIMARY KEY (`id`);
-
+ 
 --
 -- Indexes for table `tbl_reset_password`
 --
-ALTER TABLE `tbl_reset_password`
-  ADD PRIMARY KEY (`id`);
-
+ 
 --
 -- Indexes for table `tbl_roles`
 --
@@ -161,13 +122,11 @@ ALTER TABLE `tbl_users`
 --
 -- AUTO_INCREMENT for table `tbl_last_login`
 --
-ALTER TABLE `tbl_last_login`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+ 
 --
 -- AUTO_INCREMENT for table `tbl_reset_password`
 --
-ALTER TABLE `tbl_reset_password`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+ 
 --
 -- AUTO_INCREMENT for table `tbl_roles`
 --

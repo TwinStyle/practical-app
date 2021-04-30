@@ -1,20 +1,9 @@
 <?php if(!defined('BASEPATH')) exit('No direct script access allowed');
-
-/**
- * Class : Login_model (Login Model)
- * Login model class to get to authenticate user credentials 
- * @author : Kishor Mali
- * @version : 1.1
- * @since : 15 November 2016
- */
+ 
 class Login_model extends CI_Model
 {
     
-    /**
-     * This function used to check the login credentials of the user
-     * @param string $email : This is email of the user
-     * @param string $password : This is encrypted password of the user
-     */
+   
     function loginMe($email, $password)
     {
         $this->db->select('BaseTbl.userId, BaseTbl.password, BaseTbl.name, BaseTbl.roleId, Roles.role');
@@ -37,11 +26,7 @@ class Login_model extends CI_Model
         }
     }
 
-    /**
-     * This function used to check email exists or not
-     * @param {string} $email : This is users email id
-     * @return {boolean} $result : TRUE/FALSE
-     */
+   
     function checkEmailExist($email)
     {
         $this->db->select('userId');
@@ -56,12 +41,7 @@ class Login_model extends CI_Model
         }
     }
 
-
-    /**
-     * This function used to insert reset password data
-     * @param {array} $data : This is reset password data
-     * @return {boolean} $result : TRUE/FALSE
-     */
+ 
     function resetPasswordUser($data)
     {
         $result = $this->db->insert('tbl_reset_password', $data);
@@ -72,12 +52,7 @@ class Login_model extends CI_Model
             return FALSE;
         }
     }
-
-    /**
-     * This function is used to get customer information by email-id for forget password email
-     * @param string $email : Email id of customer
-     * @return object $result : Information of customer
-     */
+ 
     function getCustomerInfoByEmail($email)
     {
         $this->db->select('userId, email, name');
@@ -88,12 +63,7 @@ class Login_model extends CI_Model
 
         return $query->row();
     }
-
-    /**
-     * This function used to check correct activation deatails for forget password.
-     * @param string $email : Email id of user
-     * @param string $activation_id : This is activation string
-     */
+ 
     function checkActivationDetails($email, $activation_id)
     {
         $this->db->select('id');
@@ -124,11 +94,7 @@ class Login_model extends CI_Model
         $this->db->trans_complete();
     }
 
-    /**
-     * This function is used to get last login info by user id
-     * @param number $userId : This is user id
-     * @return number $result : This is query result
-     */
+ 
     function lastLoginInfo($userId)
     {
         $this->db->select('BaseTbl.createdDtm');

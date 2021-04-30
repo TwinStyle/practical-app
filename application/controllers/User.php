@@ -26,7 +26,7 @@ class User extends BaseController
      */
     public function index()
     {
-        $this->global['pageTitle'] = 'CodeInsect : Dashboard';
+        $this->global['pageTitle'] = ' Dashboard';
         
         $this->loadViews("dashboard", $this->global, NULL , NULL);
     }
@@ -53,7 +53,7 @@ class User extends BaseController
             
             $data['userRecords'] = $this->user_model->userListing($searchText, $returns["page"], $returns["segment"]);
             
-            $this->global['pageTitle'] = 'CodeInsect : User Listing';
+            $this->global['pageTitle'] = ' User Listing';
             
             $this->loadViews("users", $this->global, $data, NULL);
         }
@@ -79,7 +79,7 @@ class User extends BaseController
             
             $data['uploadRecords'] = $this->user_model->searchWord($searchText, $returns["page"], $returns["segment"]);
             
-            $this->global['pageTitle'] = 'CodeInsect : User Listing';
+            $this->global['pageTitle'] = ' User Listing';
             
             $this->loadViews("upload", $this->global, $data, NULL);
         }
@@ -103,7 +103,7 @@ class User extends BaseController
             
             $data['uploadRecords'] = $this->user_model->uploadlisting($searchText, $returns["page"], $returns["segment"]);
             
-            $this->global['pageTitle'] = 'CodeInsect : User Listing';
+            $this->global['pageTitle'] = 'User Listing';
             
             $this->loadViews("upload", $this->global, $data, NULL);
         }
@@ -123,7 +123,7 @@ class User extends BaseController
             $this->load->model('user_model');
             $data['roles'] = $this->user_model->getUserRoles();
             
-            $this->global['pageTitle'] = 'CodeInsect : Add New User';
+            $this->global['pageTitle'] = ' Add New User';
 
             $this->loadViews("addNew", $this->global, $data, NULL);
         }
@@ -219,7 +219,29 @@ class User extends BaseController
             $data['roles'] = $this->user_model->getUserRoles();
             $data['userInfo'] = $this->user_model->getUserInfo($userId);
             
-            $this->global['pageTitle'] = 'CodeInsect : Edit User';
+            $this->global['pageTitle'] = ' Edit User';
+            
+            $this->loadViews("editOld", $this->global, $data, NULL);
+        }
+    }
+
+    function editOldFile($userId = NULL)
+    {
+        if($this->isAdmin() == TRUE || $userId == 1)
+        {
+            $this->loadThis();
+        }
+        else
+        {
+            if($userId == null)
+            {
+                redirect('userListing');
+            }
+            
+            $data['roles'] = $this->user_model->getUserRoles();
+            $data['userInfo'] = $this->user_model->getUserInfo($userId);
+            
+            $this->global['pageTitle'] = 'Edit User';
             
             $this->loadViews("editOld", $this->global, $data, NULL);
         }
@@ -290,11 +312,7 @@ class User extends BaseController
         }
     }
 
-
-    /**
-     * This function is used to delete the user using userId
-     * @return boolean $result : TRUE / FALSE
-     */
+ 
     function deleteUser()
     {
         if($this->isAdmin() == TRUE)
@@ -333,20 +351,14 @@ class User extends BaseController
 
     
     
-    /**
-     * Page not found : error 404
-     */
+    
     function pageNotFound()
     {
-        $this->global['pageTitle'] = 'CodeInsect : 404 - Page Not Found';
+        $this->global['pageTitle'] = ' 404 - Page Not Found';
         
         $this->loadViews("404", $this->global, NULL, NULL);
     }
-
-    /**
-     * This function used to show login history
-     * @param number $userId : This is user id
-     */
+ 
     function loginHistoy($userId = NULL)
     {
         if($this->isAdmin() == TRUE)
@@ -375,7 +387,7 @@ class User extends BaseController
 
             $data['userRecords'] = $this->user_model->loginHistory($userId, $searchText, $fromDate, $toDate, $returns["page"], $returns["segment"]);
             
-            $this->global['pageTitle'] = 'CodeInsect : User Login History';
+            $this->global['pageTitle'] = 'User Login History';
             
             $this->loadViews("loginHistory", $this->global, $data, NULL);
         }        
@@ -389,7 +401,7 @@ class User extends BaseController
         $data["userInfo"] = $this->user_model->getUserInfoWithRole($this->vendorId);
         $data["active"] = $active;
         
-        $this->global['pageTitle'] = $active == "details" ? 'CodeInsect : My Profile' : 'CodeInsect : Change Password';
+        $this->global['pageTitle'] = $active == "details" ? ' My Profile' : 'Change Password';
         $this->loadViews("profile", $this->global, $data, NULL);
     }
 
@@ -398,10 +410,44 @@ class User extends BaseController
         $data["userInfo"] = $this->user_model->getUserInfoWithRole($this->vendorId);
         $data["active"] = $active;
         
-        $this->global['pageTitle'] = $active == "details" ? 'CodeInsect : My Profile' : 'CodeInsect : Change Password';
+        $this->global['pageTitle'] = $active == "details" ? 'My Profile' : 'Change Password';
         $this->loadViews("editfile", $this->global, $data, NULL);
     }
+    function fileUpdate($active = "details")
+    {
+        $this->load->library('form_validation');
+            
+        $this->form_validation->set_rules('fname','Full Name','trim|required|max_length[128]');
+        $this->form_validation->set_rules('mobile','Mobile Number','required|min_length[10]');
+        $this->form_validation->set_rules('email','Email','trim|required|valid_email|max_length[128]|callback_emailExists');        
+        
+        if($this->form_validation->run() == FALSE)
+        {
+            $this->profile($active);
+        }
+        else
+        {
+            $name = ucwords(strtolower($this->security->xss_clean($this->input->post('fname'))));
+            $mobile = $this->security->xss_clean($this->input->post('mobile'));
+            $email = strtolower($this->security->xss_clean($this->input->post('email')));
+            
+            $userInfo = array('name'=>$name, 'email'=>$email, 'mobile'=>$mobile, 'updatedBy'=>$this->vendorId, 'updatedDtm'=>date('Y-m-d H:i:s'));
+            
+            $result = $this->user_model->editUser($userInfo, $this->vendorId);
+            
+            if($result == true)
+            {
+                $this->session->set_userdata('name', $name);
+                $this->session->set_flashdata('success', 'Profile updated successfully');
+            }
+            else
+            {
+                $this->session->set_flashdata('error', 'Profile updation failed');
+            }
 
+            redirect('profile/'.$active);
+        }
+    }
     /**
      * This function is used to update the user details
      * @param text $active : This is flag to set the active tab
@@ -424,7 +470,11 @@ class User extends BaseController
             $mobile = $this->security->xss_clean($this->input->post('mobile'));
             $email = strtolower($this->security->xss_clean($this->input->post('email')));
             
-            $userInfo = array('name'=>$name, 'email'=>$email, 'mobile'=>$mobile, 'updatedBy'=>$this->vendorId, 'updatedDtm'=>date('Y-m-d H:i:s'));
+            $userInfo = array('name'=>$name, 
+                              'email'=>$email, 
+                              'mobile'=>$mobile, 
+                              'updatedBy'=>$this->vendorId, 
+                              'updatedDtm'=>date('Y-m-d H:i:s'));
             
             $result = $this->user_model->editUser($userInfo, $this->vendorId);
             

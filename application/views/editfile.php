@@ -34,31 +34,25 @@ $role = $userInfo->role;
                   </ul>
                     <div class="tab-content">
                         <div class="<?= ($active == "details")? "active" : "" ?> tab-pane" id="details">
-                            <form action="<?php echo base_url() ?>profileUpdate" method="post" id="editProfile" role="form">
+                            <form action="<?php echo base_url() ?>fileUpdate" method="post" id="editProfile" role="form">
                                 <?php $this->load->helper('form'); ?>
                                 <div class="box-body">
                                     <div class="row">
                                         <div class="col-md-12">                                
                                             <div class="form-group">
-                                                <label for="fname">Full Name</label>
-                                                <input type="text" class="form-control" id="fname" name="fname" placeholder="<?php echo $name; ?>" value="<?php echo set_value('fname', $name); ?>" maxlength="128" />
+                                                <label for="fname">File name</label>
+                                                <input type="text" class="form-control" id="fname" name="fname" placeholder="new file name"   maxlength="128" />
                                                 <input type="hidden" value="<?php echo $userId; ?>" name="userId" id="userId" />    
                                             </div>
                                         </div>
                                     </div>
+                                  
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="mobile">Mobile Number</label>
-                                                <input type="text" class="form-control" id="mobile" name="mobile" placeholder="<?php echo $mobile; ?>" value="<?php echo set_value('mobile', $mobile); ?>" maxlength="10">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo $email; ?>" value="<?php echo set_value('email', $email); ?>">
+                                                <label for="email">File content</label>
+                                                <textarea type="text" class="form-control" id="myContent" name="myContent" rows="4" cols="50" placeholder="enter new content" value="<?php echo set_value('email', $email); ?>">
+</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -117,4 +111,4 @@ $role = $userInfo->role;
     </section>
 </div>
 
-<script src="<?php echo base_url(); ?>assets/js/editUser.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>assets/js/editFile.js" type="text/javascript"></script>
