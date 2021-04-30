@@ -62,6 +62,11 @@ $route['dashboard'] = 'user';
 $route['logout'] = 'user/logout';
 $route['userListing'] = 'user/userListing';
 $route['userListing/(:num)'] = "user/userListing/$1";
+
+$route['do_upload'] = 'user/do_upload';
+$route['uploadlisting'] = 'user/uploadlisting';
+$route['uploadlisting/(:num)'] = "user/uploadlisting/$1";
+
 $route['addNew'] = "user/addNew";
 $route['addNewUser'] = "user/addNewUser";
 $route['editOld'] = "user/editOld";

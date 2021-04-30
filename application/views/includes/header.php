@@ -44,7 +44,7 @@
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><b>CI</b>AS</span>
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b>CodeInsect</b>AS</span>
+          <span class="logo-lg"><b>Practical</b>execise</span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
@@ -54,15 +54,8 @@
           </a>
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-              <li class="dropdown tasks-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                  <i class="fa fa-history"></i>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="header"> Last Login : <i class="fa fa-clock-o"></i> <?= empty($last_login) ? "First Time Login" : $last_login; ?></li>
-                </ul>
-              </li>
-              <!-- User Account: style can be found in dropdown.less -->
+             
+              
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <img src="<?php echo base_url(); ?>assets/dist/img/avatar.png" class="user-image" alt="User Image"/>
@@ -107,65 +100,27 @@
               </a>
             </li>
             <li>
-              <a href="#" >
+              <a  href="<?php echo base_url(); ?>uploadlisting">
                 <i class="fa fa-plane"></i>
-                <span>New Task</span>
+                <span>Upload</span>
               </a>
             </li>
             <li>
               <a href="#" >
                 <i class="fa fa-ticket"></i>
-                <span>My Tasks</span>
+                <span>My Uploads</span>
               </a>
             </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-share"></i> <span>Multilevel</span>
-                <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
-                <li class="treeview">
-                  <a href="#"><i class="fa fa-circle-o"></i> Level One
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                  </a>
-                  <ul class="treeview-menu">
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
-                    <li class="treeview">
-                      <a href="#"><i class="fa fa-circle-o"></i> Level Two
-                        <span class="pull-right-container">
-                          <i class="fa fa-angle-left pull-right"></i>
-                        </span>
-                      </a>
-                      <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
-              </ul>
-            </li>
+          
             <?php
             if($role == ROLE_ADMIN || $role == ROLE_MANAGER)
             {
             ?>
             <li>
-              <a href="#" >
-                <i class="fa fa-thumb-tack"></i>
-                <span>Task Status</span>
-              </a>
+            
             </li>
             <li>
-              <a href="#" >
-                <i class="fa fa-upload"></i>
-                <span>Task Uploads</span>
-              </a>
+             
             </li>
             <?php
             }
@@ -179,10 +134,7 @@
               </a>
             </li>
             <li>
-              <a href="#" >
-                <i class="fa fa-files-o"></i>
-                <span>Reports</span>
-              </a>
+              
             </li>
             <?php
             }

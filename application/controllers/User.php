@@ -59,6 +59,32 @@ class User extends BaseController
         }
     }
 
+     
+    function uploadlisting()
+    {
+        if($this->isAdmin() == TRUE)
+        {
+            $this->loadThis();
+        } 
+        else
+        {        
+            $searchText = $this->security->xss_clean($this->input->post('searchText'));
+            $data['searchText'] = $searchText;
+            
+            $this->load->library('pagination');
+            
+            $count = $this->user_model->uploadListingCount($searchText);
+
+			$returns = $this->paginationCompress ( "uploadListing/", $count, 10 );
+            
+            $data['uploadRecords'] = $this->user_model->uploadListing($searchText, $returns["page"], $returns["segment"]);
+            
+            $this->global['pageTitle'] = 'CodeInsect : User Listing';
+            
+            $this->loadViews("upload", $this->global, $data, NULL);
+        }
+    }
+
     /**
      * This function is used to load the add new form
      */
@@ -115,8 +141,7 @@ class User extends BaseController
             $this->form_validation->set_rules('password','Password','required|max_length[20]');
             $this->form_validation->set_rules('cpassword','Confirm Password','trim|required|matches[password]|max_length[20]');
             $this->form_validation->set_rules('role','Role','trim|required|numeric');
-            $this->form_validation->set_rules('mobile','Mobile Number','required|min_length[10]');
-            
+           //
             if($this->form_validation->run() == FALSE)
             {
                 $this->addNew();
@@ -429,6 +454,69 @@ class User extends BaseController
         }
 
         return $return;
+    }
+
+    function do_upload()
+    {
+        $words = array();
+        // print($_FILES["customeFile"]["name"]);
+
+        $config['upload_path']          = './assets/uploads/';
+        $config['allowed_types']        = 'txt'; 
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('customeFile'))
+        {
+                $error = array('error' => $this->upload->display_errors());
+                print_r($error);
+                die();  
+        }
+        else
+        {
+                $data = array('upload_data' => $this->upload->data());
+                // echo "<br> <h1> Upload Successfully!!!</h1>"; 
+                
+                $read = fopen('./assets/uploads/'. $_FILES["customeFile"]["name"],"r");
+
+                while(!feof($read))
+                {
+                    $content = fgets($read);
+                    $asArray = explode(" ",$content);
+                }
+                
+                $count = count($asArray);
+                $content = "";
+
+                for($i = 0;$i < $count; $i++)
+                {
+                    $content .=$asArray[$i]." ";
+                }
+                
+                $uploadinfo = array('userId'=>$this->vendorId,
+                                 'filename'=>$_FILES["customeFile"]["name"],
+                                 'filesize'=>$_FILES["customeFile"]["size"],
+                                 'dateofupload'=>date('Y-m-d H:i:s'),
+                                 'content'=>$content);
+
+
+                $userId = $this->user_model->userid( $this->vendorId);
+               
+                $result = $this->user_model->saveupload($uploadinfo);
+
+                if($result > 0)
+                {
+                    $this->session->set_flashdata('success', 'File successfully Saved');
+                }
+                else
+                {
+                    $this->session->set_flashdata('error', 'File failed to save');
+                }
+                
+                redirect('uploadlisting');
+               // redirect('uploadlisting');
+        }
+
     }
 }
 

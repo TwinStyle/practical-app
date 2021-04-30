@@ -31,6 +31,23 @@ class User_model extends CI_Model
         
         return $query->num_rows();
     }
+
+    function uploadListingCount($searchText = '')
+    {
+        $this->db->select('BaseTbl.userId, BaseTbl.filename, BaseTbl.filesize, BaseTbl.dateofupload, BaseTbl.content');
+        $this->db->from('uploads as BaseTbl');
+        //$this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.roleId','left');
+        if(!empty($searchText)) {
+            $likeCriteria = "(BaseTbl.filename  LIKE '%".$searchText."%'
+                            OR  BaseTbl.content  LIKE '%".$searchText."%'";
+            $this->db->where($likeCriteria);
+        }
+       // $this->db->where('BaseTbl.isDeleted', 0);
+        //$this->db->where('BaseTbl.roleId !=', 1);
+        $query = $this->db->get();
+        
+        return $query->num_rows();
+    }
     
     /**
      * This function is used to get the user listing count
@@ -40,6 +57,27 @@ class User_model extends CI_Model
      * @return array $result : This is result
      */
     function userListing($searchText = '', $page, $segment)
+    {
+        $this->db->select('BaseTbl.userId, BaseTbl.email, BaseTbl.name, BaseTbl.mobile, BaseTbl.createdDtm, Role.role');
+        $this->db->from('tbl_users as BaseTbl');
+        $this->db->join('tbl_roles as Role', 'Role.roleId = BaseTbl.roleId','left');
+        if(!empty($searchText)) {
+            $likeCriteria = "(BaseTbl.email  LIKE '%".$searchText."%'
+                            OR  BaseTbl.name  LIKE '%".$searchText."%'
+                            OR  BaseTbl.mobile  LIKE '%".$searchText."%')";
+            $this->db->where($likeCriteria);
+        }
+        $this->db->where('BaseTbl.isDeleted', 0);
+        $this->db->where('BaseTbl.roleId !=', 1);
+        $this->db->order_by('BaseTbl.userId', 'DESC');
+        $this->db->limit($page, $segment);
+        $query = $this->db->get();
+        
+        $result = $query->result();        
+        return $result;
+    }
+
+    function uploadListing($searchText = '', $page, $segment)
     {
         $this->db->select('BaseTbl.userId, BaseTbl.email, BaseTbl.name, BaseTbl.mobile, BaseTbl.createdDtm, Role.role');
         $this->db->from('tbl_users as BaseTbl');
@@ -291,6 +329,30 @@ class User_model extends CI_Model
         
         return $query->row();
     }
+
+    function userid($userId)
+    {  
+        $this->db->select('BaseTbl.userId');
+        $this->db->from('tbl_users AS BaseTbl');
+        $this->db->where('BaseTbl.userId',$userId);
+        $query = $this->db->get();
+            
+        return $query->row();
+    }
+
+    function saveupload($uploadinfo)
+    {
+        
+        $this->db->trans_start();
+        $this->db->insert('uploads', $uploadinfo);
+        
+        $insert_id = $this->db->insert_id();
+        
+        $this->db->trans_complete();
+        
+        return $insert_id;
+    }
+    
 
 }
 
